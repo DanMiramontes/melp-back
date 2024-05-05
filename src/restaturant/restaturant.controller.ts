@@ -13,6 +13,7 @@ export class RestaturantController {
   constructor(private readonly restaturantService: RestaturantService) {}
 
   @Get('statistics/')
+  @Auth(ValidRoles.admin, ValidRoles.superUser, ValidRoles.user)
   statistics(
     @Query('latitude') latitude: Number,
     @Query('longitude') longitude: Number ,

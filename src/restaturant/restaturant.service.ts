@@ -146,15 +146,22 @@ export class RestaturantService {
       .addSelect("STDDEV_POP(restaurants.rating)", "stdRating")
       .addSelect("COUNT(*)", "count")
       .where(
-       `(6371000 * acos(cos(radians(:lat)) * cos(radians(restaurants.lat)) * cos(radians(restaurants.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(restaurants.lat)))) < :radius`,
+       `(6371000 * acos(cos(radians(:lat)) * cos(radians(restaurants.lat)) * cos(radians(restaurants.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(restaurants.lat)))) < :rad`,
        { lat, lng, rad }
      )
      .getRawOne();
 
+     if(response.count === '0'){
+      throw new BadRequestException({
+        status: HttpStatus.NOT_FOUND,
+        message: `Position ${latitude}, ${longitude} not found` 
+      });
+    }
+
      return {
       count : Number(response.count),
-      avg: response.stdRating,
-      std: response.avg
+      avg: Number(response.stdRating).toFixed(2),
+      std: Number(response.avg).toFixed(2)
      }
 
     } catch (error) {
@@ -164,6 +171,9 @@ export class RestaturantService {
   }
   
   private handleExceptions( error:any ){
+    if( error.status === 400){
+      throw new BadRequestException(error.detail, error.message);
+    }
     if( error.code === '23505')
     throw new BadRequestException(error.detail);
     this.logger.error(error);
