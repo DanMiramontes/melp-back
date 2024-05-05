@@ -68,7 +68,20 @@ export class RestaturantService {
 
   async findOne(id: string) {
     const restaurant = await this.restaurantRepository.findOne({
-      where: { id }
+      where: { id },
+      select: {
+        id: true,
+        rating: true,
+        name: true,
+        site: true,
+        email: true,
+        phone: true,
+        street: true,
+        city: true,
+        state: true,
+        lat: true,
+        lng:  true,
+      },
     });
 
     if( !restaurant) {
@@ -100,13 +113,7 @@ export class RestaturantService {
     if( !restaurant ) throw new NotFoundException(`Product with id ${ id } not found`);
   }
 
-  private handleExceptions( error:any ){
-    if( error.code === '23505')
-    throw new BadRequestException(error.detail);
-    this.logger.error(error);
-    throw new InternalServerErrorException('Unexpected error, check server logs'); 
-  }
-
+  
   async deleteAllRestaurants(){
     const query = this.restaurantRepository.createQueryBuilder('restaurant');
     try {
@@ -118,7 +125,50 @@ export class RestaturantService {
       this.handleExceptions(error);
     }
   }
-  
 
+  async statistics(latitude: Number, longitude: Number, radius: Number){
+
+    if(!latitude || !longitude || !radius){
+      throw new BadRequestException({
+        status: HttpStatus.BAD_REQUEST,
+        message: `latitude, longitude, radius is needed` 
+      });
+    }
+
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+    const rad = Number(radius);
+
+    try {
+      const response = await this.restaurantRepository
+      .createQueryBuilder('restaurants')
+      .select("AVG(restaurants.rating)", "avg")
+      .addSelect("STDDEV_POP(restaurants.rating)", "stdRating")
+      .addSelect("COUNT(*)", "count")
+      .where(
+       `(6371000 * acos(cos(radians(:lat)) * cos(radians(restaurants.lat)) * cos(radians(restaurants.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(restaurants.lat)))) < :radius`,
+       { lat, lng, radius }
+     )
+     .getRawOne();
+
+     return {
+      count : Number(response.count),
+      avg: response.stdRating,
+      std: response.avg
+     }
+
+    } catch (error) {
+      this.handleExceptions(error);
+      
+    }
+  }
+  
+  private handleExceptions( error:any ){
+    if( error.code === '23505')
+    throw new BadRequestException(error.detail);
+    this.logger.error(error);
+    throw new InternalServerErrorException('Unexpected error, check server logs'); 
+  }
+  
   
 }

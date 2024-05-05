@@ -3,6 +3,7 @@ import { RestaturantModule } from './restaturant/restaturant.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SeedModule } from './seed/seed.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -21,7 +22,8 @@ import { SeedModule } from './seed/seed.module';
 
     }),
     RestaturantModule,
-    SeedModule
+    SeedModule,
+    AuthModule
   ],
 
 })
