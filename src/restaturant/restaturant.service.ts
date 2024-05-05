@@ -20,7 +20,7 @@ export class RestaturantService {
       const restaturant = await this.restaurantRepository.save( createRestaturantDto);
       return restaturant;
     } catch (error) {
-      console.log(error);
+      this.handleExceptions(error);
     }
   }
 
@@ -47,7 +47,7 @@ export class RestaturantService {
     throw new InternalServerErrorException('Unexpected error, check server logs'); 
   }
 
-  async deleteAllProducts(){
+  async deleteAllRestaurants(){
     const query = this.restaurantRepository.createQueryBuilder('restaurant');
     try {
       return await query

@@ -12,6 +12,7 @@ import { Restaturant } from './entities/restaturant.entity';
   ],
   exports:[
     TypeOrmModule,
+    RestaturantService,
   ]
 })
 export class RestaturantModule {}
