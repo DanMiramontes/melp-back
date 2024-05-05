@@ -49,6 +49,12 @@ export class Restaturant {
         comment: 'Longitude value for the location'
     })
     lng: number;
+
+    @Column({
+        default: true
+    })
+    status: Boolean;
 }
+
 
 

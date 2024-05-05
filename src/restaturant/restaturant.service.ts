@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CreateRestaturantDto } from './dto/create-restaturant.dto';
 import { UpdateRestaturantDto } from './dto/update-restaturant.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaturant } from './entities/restaturant.entity';
 import { DataSource, Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class RestaturantService {
@@ -24,20 +25,79 @@ export class RestaturantService {
     }
   }
 
-  findAll() {
-    return `This action returns all restaturant`;
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, page = 1, status = true } = paginationDto;
+    const totalPage = await this.restaurantRepository.count({
+      where : {
+        status
+      }
+    });
+    
+    const currentPage = page;
+    const perPage = limit
+
+    return {
+      data: await this.restaurantRepository.find({
+        select: {
+          id: true,
+          rating: true,
+          name: true,
+          site: true,
+          email: true,
+          phone: true,
+          street: true,
+          city: true,
+          state: true,
+          lat: true,
+          lng:  true,
+
+        },
+        skip: ( currentPage - 1 ) * perPage,
+        take: perPage,
+        where : {
+          status
+        },
+      }),
+      meta: {
+        total: totalPage,
+        page: currentPage,
+        lastPage: Math.ceil( totalPage / perPage)
+      }
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} restaturant`;
+  async findOne(id: string) {
+    const restaurant = await this.restaurantRepository.findOne({
+      where: { id }
+    });
+
+    if( !restaurant) {
+      throw new BadRequestException({
+        status: HttpStatus.NOT_FOUND,
+        message: `Restaurant with id ${ id } not found` 
+      });
+    }
+    
+    return restaurant;
   }
 
-  update(id: number, updateRestaturantDto: UpdateRestaturantDto) {
-    return `This action updates a #${id} restaturant`;
+  async update(id: string, updateRestaturantDto: UpdateRestaturantDto) {
+    await this.findOne(id);
+
+    const response = await this.restaurantRepository.update(id, updateRestaturantDto);
+
+    return {
+      id,
+      data: updateRestaturantDto,
+      response
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} restaturant`;
+  async remove(id: string) {
+    await this.findOne(id);
+    const restaurant = await this.restaurantRepository.update(id,{ status: false});
+
+    if( !restaurant ) throw new NotFoundException(`Product with id ${ id } not found`);
   }
 
   private handleExceptions( error:any ){
