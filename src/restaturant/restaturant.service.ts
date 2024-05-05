@@ -147,7 +147,7 @@ export class RestaturantService {
       .addSelect("COUNT(*)", "count")
       .where(
        `(6371000 * acos(cos(radians(:lat)) * cos(radians(restaurants.lat)) * cos(radians(restaurants.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(restaurants.lat)))) < :radius`,
-       { lat, lng, radius }
+       { lat, lng, rad }
      )
      .getRawOne();
 
