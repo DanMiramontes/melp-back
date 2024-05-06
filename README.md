@@ -21,7 +21,32 @@ Built with NestJS, a progressive Node.js framework for building efficient and sc
 * PostgreSQL/PostGIS: Used for storing and querying geospatial data.
 
 ## API Endpoints
+* POST /auth/register
+* POST /auth/login
 
+* GET /restaurants/
+* GET /restaurants/:id
+* POST /restaurants/
+* PATCH /restaurants/:id
+* DELETE /restaurants/:id
+
+* GET /seed
+
+## Develop
+* Clone the project 
+```bash
+$ git clone https://github.com/DanMiramontes/melp-back.git
+```
+* Define env varible
+```bash
+  DB_PASSWORD=
+  DB_NAME=
+  DB_HOST=
+  DB_PORT=
+  DB_USERNAME=
+  PORT=
+  JWT_SECRET=
+```
 
 ## Installation
 
@@ -41,20 +66,6 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
 
 
 ## Stay in touch
