@@ -21,16 +21,17 @@ Built with NestJS, a progressive Node.js framework for building efficient and sc
 * PostgreSQL/PostGIS: Used for storing and querying geospatial data.
 
 ## API Endpoints
-* POST /auth/register
-* POST /auth/login
+* Railway [https://melp-back-production.up.railway.app/](https://melp-back-production.up.railway.app)
+* POST auth/register
+* POST auth/login
 
-* GET /restaurants/
-* GET /restaurants/:id
-* POST /restaurants/
-* PATCH /restaurants/:id
-* DELETE /restaurants/:id
+* GET restaurants/
+* GET restaurants/:id
+* POST restaurants/
+* PATCH restaurants/:id
+* DELETE restaurants/:id
 
-* GET /seed
+* GET seed
 
 ## Develop
 * Clone the project 
