@@ -69,19 +69,6 @@ export class RestaturantService {
   async findOne(id: string) {
     const restaurant = await this.restaurantRepository.findOne({
       where: { id },
-      select: {
-        id: true,
-        rating: true,
-        name: true,
-        site: true,
-        email: true,
-        phone: true,
-        street: true,
-        city: true,
-        state: true,
-        lat: true,
-        lng:  true,
-      },
     });
 
     if( !restaurant) {

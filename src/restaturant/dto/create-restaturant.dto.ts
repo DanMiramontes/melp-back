@@ -25,7 +25,6 @@ export class CreateRestaturantDto {
         type: String,
     })
     @IsString()
-    @IsUrl()
     site: string;
 
     @ApiProperty({
