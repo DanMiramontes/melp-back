@@ -22,6 +22,7 @@ Built with NestJS, a progressive Node.js framework for building efficient and sc
 
 ## API Endpoints
 * Railway [https://melp-back-production.up.railway.app/](https://melp-back-production.up.railway.app)
+* Swager [https://melp-back-production.up.railway.app/Document](https://melp-back-production.up.railway.app/Document)
 * POST auth/register
 * POST auth/login
 
